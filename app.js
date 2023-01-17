@@ -9,8 +9,32 @@ const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process
 const app = express();
 
 app.use(express.json());
-app.use(userRoutes); // Маршрутизирует все запросы про пользователя
-app.use(cardRoutes); // Маршрутизирует все запросы про карточки
+
+// Маршрутизирует все запросы про пользователя
+app.use(
+  '/users',
+  (req, res, next) => {
+    req.user = {
+      _id: '63c1e664cb5281170a8fb576',
+    };
+
+    next();
+  },
+  userRoutes,
+);
+
+// Маршрутизирует все запросы про карточки
+app.use(
+  '/cards',
+  (req, res, next) => {
+    req.user = {
+      _id: '63c1e664cb5281170a8fb576',
+    };
+
+    next();
+  },
+  cardRoutes,
+);
 
 // подключаемся к серверу mongo
 mongoose.connect(MONGO_URL);
