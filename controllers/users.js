@@ -9,7 +9,7 @@ function createUser(req, res) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
       }
 
       return res.status(500).send({
@@ -34,7 +34,7 @@ function getUser(req, res) {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: `Пользователь по указанному id = ${req.params.userId} не найден` });
+        return res.status(404).send({ message: 'Пользователь не найден' });
       }
       return res.status(500).send(err);
     });
@@ -51,11 +51,16 @@ function updateUser(req, res) {
   )
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: `Пользователь по указанному id = ${req.params.userId} не найден` });
+        return res.status(404).send({ message: 'Пользователь не найден' });
       }
       return res.status(200).send({ data: user });
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      return res.status(500).send(err);
+    });
 }
 
 function updateUserAvatar(req, res) {
@@ -69,11 +74,16 @@ function updateUserAvatar(req, res) {
   )
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: `Пользователь по указанному id = ${req.params.userId} не найден` });
+        return res.status(404).send({ message: 'Пользователь не найден' });
       }
       return res.status(200).send({ data: user });
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
+      }
+      return res.status(500).send(err);
+    });
 }
 
 module.exports = {

@@ -10,7 +10,7 @@ function createCard(req, res) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+        return res.status(400).send({ message: 'Переданы некорректные данные' });
       }
 
       return res.status(500).send({
@@ -35,7 +35,7 @@ function deleteCard(req, res) {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: `Карточка с указанным id = ${req.params.cardId} не найдена` });
+        return res.status(404).send({ message: 'Карточка не найдена' });
       }
 
       return res.status(500).send(err);
@@ -50,11 +50,13 @@ function setLikeCard(req, res) {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: `Карточка с указанным id = ${req.params.cardId} не найдена` });
+        return res.status(404).send({ message: 'Карточка не найдена' });
       }
       return res.status(200).send({ data: card });
     })
-    .catch((err) => { res.status(500).send(err); });
+    .catch((err) => {
+      res.status(500).send(err);
+    });
 }
 
 function removeLikeCard(req, res) {
@@ -65,11 +67,13 @@ function removeLikeCard(req, res) {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: `Карточка с указанным id = ${req.params.cardId} не найдена` });
+        return res.status(404).send({ message: 'Карточка не найдена' });
       }
       return res.status(200).send({ data: card });
     })
-    .catch((err) => { res.status(500).send(err); });
+    .catch((err) => {
+      res.status(500).send(err);
+    });
 }
 
 module.exports = {
