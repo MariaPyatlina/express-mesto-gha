@@ -36,6 +36,10 @@ app.use(
   cardRoutes,
 );
 
+app.use('/*', (req, res) => {
+  res.status(500).send({ message: 'Некорректный url' });
+});
+
 // подключаемся к серверу mongo
 mongoose.connect(MONGO_URL);
 
