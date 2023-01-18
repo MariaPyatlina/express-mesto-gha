@@ -36,8 +36,9 @@ app.use(
   cardRoutes,
 );
 
+// Маршрутизирует все неправильные запросы
 app.use('/*', (req, res) => {
-  res.status(500).send({ message: 'Некорректный url' });
+  res.status(404).send({ message: 'Некорректный url' });
 });
 
 // подключаемся к серверу mongo
