@@ -31,11 +31,14 @@ function getAllCards(req, res) {
 function deleteCard(req, res) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
-      res.send({ data: card });
+      if (!card) {
+        return res.status(404).send({ message: 'Карточка не найдена' });
+      }
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Карточка не найдена' });
+        return res.status(400).send({ message: 'Некорректный id карточки' });
       }
 
       return res.status(500).send(err);
@@ -55,7 +58,10 @@ function setLikeCard(req, res) {
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
-      res.status(500).send(err);
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Некорректный id карточки' });
+      }
+      return res.status(500).send(err);
     });
 }
 
@@ -72,7 +78,10 @@ function removeLikeCard(req, res) {
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
-      res.status(500).send(err);
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Некорректный id карточки' });
+      }
+      return res.status(500).send(err);
     });
 }
 
