@@ -10,31 +10,20 @@ const app = express();
 
 app.use(express.json());
 
-// Маршрутизирует все запросы про пользователя
-app.use(
-  '/users',
-  (req, res, next) => {
-    req.user = {
-      _id: '63c1e664cb5281170a8fb576',
-    };
+// Подставляется id пользователя во все запросы
+app.use((req, res, next) => {
+  req.user = {
+    _id: '63c1e664cb5281170a8fb576',
+  };
 
-    next();
-  },
-  userRoutes,
-);
+  next();
+});
+
+// Маршрутизирует все запросы про пользователя
+app.use('/users', userRoutes);
 
 // Маршрутизирует все запросы про карточки
-app.use(
-  '/cards',
-  (req, res, next) => {
-    req.user = {
-      _id: '63c1e664cb5281170a8fb576',
-    };
-
-    next();
-  },
-  cardRoutes,
-);
+app.use('/cards', cardRoutes);
 
 // Маршрутизирует все неправильные запросы
 app.use('/*', (req, res) => {

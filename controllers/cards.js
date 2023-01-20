@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const errorHandler = require('../errors/errors');
 
 function createCard(req, res) {
   const owner = req.user._id;
@@ -8,16 +9,14 @@ function createCard(req, res) {
     .then((card) => {
       res.status(201).send(card);
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные' });
-      }
+    // .catch((err) => {
+    //   if (err.name === 'ValidationError') {
+    //     return res.status(400).send({ message: 'Переданы некорректные данные' });
+    //   }
 
-      return res.status(500).send({
-        message: 'При создании карточки произошла ошибка',
-        err,
-      });
-    });
+    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    // });
+    .catch((err) => errorHandler(err, res));
 }
 
 function getAllCards(req, res) {
@@ -25,7 +24,8 @@ function getAllCards(req, res) {
     .then((card) => {
       res.send({ data: card });
     })
-    .catch((err) => res.status(500).send(err));
+    // .catch(err => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch((err) => errorHandler(err, res));
 }
 
 function deleteCard(req, res) {
@@ -36,13 +36,14 @@ function deleteCard(req, res) {
       }
       return res.send({ data: card });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Некорректный id карточки' });
-      }
+    // .catch((err) => {
+    //   if (err.name === 'CastError') {
+    //     return res.status(400).send({ message: 'Некорректный id карточки' });
+    //   }
 
-      return res.status(500).send(err);
-    });
+    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    // });
+    .catch((err) => errorHandler(err, res));
 }
 
 function setLikeCard(req, res) {
@@ -57,12 +58,13 @@ function setLikeCard(req, res) {
       }
       return res.status(200).send({ data: card });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Некорректный id карточки' });
-      }
-      return res.status(500).send(err);
-    });
+    // .catch((err) => {
+    //   if (err.name === 'CastError') {
+    //     return res.status(400).send({ message: 'Некорректный id карточки' });
+    //   }
+    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    // });
+    .catch((err) => errorHandler(err, res));
 }
 
 function removeLikeCard(req, res) {
@@ -77,12 +79,13 @@ function removeLikeCard(req, res) {
       }
       return res.status(200).send({ data: card });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Некорректный id карточки' });
-      }
-      return res.status(500).send(err);
-    });
+    // .catch((err) => {
+    //   if (err.name === 'CastError') {
+    //     return res.status(400).send({ message: 'Некорректный id карточки' });
+    //   }
+    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    // });
+    .catch((err) => errorHandler(err, res));
 }
 
 module.exports = {
