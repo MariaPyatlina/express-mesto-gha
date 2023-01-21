@@ -1,5 +1,12 @@
 const Card = require('../models/card');
-const errorHandler = require('../errors/errors');
+const {
+  SERVER_ERROR,
+  BAD_REQUEST_ERROR,
+  NOT_FOUND_ERROR,
+  SERVER_ERROR_MSG,
+  BAD_REQUEST_ERROR_NSG,
+  CARD_NOT_FOUND_ERROR_MSG,
+} = require('../utils/constants');
 
 function createCard(req, res) {
   const owner = req.user._id;
@@ -9,14 +16,13 @@ function createCard(req, res) {
     .then((card) => {
       res.status(201).send(card);
     })
-    // .catch((err) => {
-    //   if (err.name === 'ValidationError') {
-    //     return res.status(400).send({ message: 'Переданы некорректные данные' });
-    //   }
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_NSG });
+      }
 
-    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
-    .catch((err) => errorHandler(err, res));
+      return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
+    });
 }
 
 function getAllCards(req, res) {
@@ -24,26 +30,24 @@ function getAllCards(req, res) {
     .then((card) => {
       res.send({ data: card });
     })
-    // .catch(err => res.status(500).send({ message: 'На сервере произошла ошибка' }));
-    .catch((err) => errorHandler(err, res));
+    .catch(() => res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG }));
 }
 
 function deleteCard(req, res) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена' });
+        return res.status(NOT_FOUND_ERROR).send({ message: CARD_NOT_FOUND_ERROR_MSG });
       }
       return res.send({ data: card });
     })
-    // .catch((err) => {
-    //   if (err.name === 'CastError') {
-    //     return res.status(400).send({ message: 'Некорректный id карточки' });
-    //   }
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_NSG });
+      }
 
-    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
-    .catch((err) => errorHandler(err, res));
+      return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
+    });
 }
 
 function setLikeCard(req, res) {
@@ -54,17 +58,16 @@ function setLikeCard(req, res) {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена' });
+        return res.status(NOT_FOUND_ERROR).send({ message: CARD_NOT_FOUND_ERROR_MSG });
       }
       return res.status(200).send({ data: card });
     })
-    // .catch((err) => {
-    //   if (err.name === 'CastError') {
-    //     return res.status(400).send({ message: 'Некорректный id карточки' });
-    //   }
-    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_NSG });
+      }
+      return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
+    });
 }
 
 function removeLikeCard(req, res) {
@@ -75,17 +78,16 @@ function removeLikeCard(req, res) {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка не найдена' });
+        return res.status(NOT_FOUND_ERROR).send({ message: CARD_NOT_FOUND_ERROR_MSG });
       }
       return res.status(200).send({ data: card });
     })
-    // .catch((err) => {
-    //   if (err.name === 'CastError') {
-    //     return res.status(400).send({ message: 'Некорректный id карточки' });
-    //   }
-    //   return res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_NSG });
+      }
+      return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
+    });
 }
 
 module.exports = {
