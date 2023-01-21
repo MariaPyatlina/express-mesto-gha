@@ -18,7 +18,7 @@ function createCard(req, res) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_NSG });
+        return res.status(BAD_REQUEST_ERROR).send({ message: `${BAD_REQUEST_ERROR_NSG}Проверьте правильность запроса.` });
       }
 
       return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
