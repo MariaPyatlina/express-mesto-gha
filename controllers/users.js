@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const {
   SERVER_ERROR,
@@ -9,9 +10,15 @@ const {
 } = require('../utils/constants');
 
 function createUser(req, res) {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
+  //const { email, password, name, about, avatar } = req.body;
+  bcrypt.hash(req.body.password, 10)  // хешируем пароль
+    .then(hash => User.create({
+      email: req.body.email,
+      password: hash,  // записываем хеш в базу
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar
+    }))
     .then((user) => {
       res.status(201).send(user);
     })
