@@ -1,20 +1,12 @@
 const Card = require('../models/card');
 const BadRequestError = require('../error/badRequestError');
-const ConflictError = require('../error/conflictError');
-const InternalServerError = require('../error/internalServerError');
 const NotFoundError = require('../error/notFoundError');
 const UnauthorizedError = require('../error/unauthorizedError');
 
 const {
-  SERVER_ERROR,
-  BAD_REQUEST_ERROR,
-  NOT_FOUND_ERROR,
-  SERVER_ERROR_MSG,
   BAD_REQUEST_ERROR_MSG,
   CARD_NOT_FOUND_ERROR_MSG,
-  UNAUTHORIZED,
   UNAUTHORIZED_ERROR_MSG,
-  SECRET_PHRASE
 } = require('../utils/constants');
 
 function createCard(req, res, next) {
@@ -28,10 +20,8 @@ function createCard(req, res, next) {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG}Проверьте правильность запроса.`))
-        // return res.status(BAD_REQUEST_ERROR).send({ message: `${BAD_REQUEST_ERROR_MSG}Проверьте правильность запроса.` });
       }
       next(err);
-      // return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
     });
 }
 
@@ -41,7 +31,6 @@ function getAllCards(req, res, next) {
       res.send({ data: card });
     })
     .catch(() => next(err)
-      //res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG })
     );
 }
 
@@ -50,15 +39,10 @@ function deleteCard(req, res, next) {
     .then((card) => {
       if (!card) {
         next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG))
-        // return res.status(NOT_FOUND_ERROR).send({ message: CARD_NOT_FOUND_ERROR_MSG });
       }
-      // проверить
-      console.log('userId', userId);
-      console.log('owner', owner);
 
       if (card.owner !== req.user._id) {
         next(new UnauthorizedError(UNAUTHORIZED_ERROR_MSG));
-        // return res.status(401).send({ message: 'Нельзя удалить чужую карточку' });
       }
 
       return res.send({ data: card });
@@ -66,10 +50,8 @@ function deleteCard(req, res, next) {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError(BAD_REQUEST_ERROR_MSG))
-        // return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_MSG });
       }
       next(err);
-      // return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
     });
 }
 
@@ -82,17 +64,14 @@ function setLikeCard(req, res, next) {
     .then((card) => {
       if (!card) {
         next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
-        // return res.status(NOT_FOUND_ERROR).send({ message: CARD_NOT_FOUND_ERROR_MSG });
       }
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError(BAD_REQUEST_ERROR_MSG))
-        // return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_MSG });
       }
       next(err);
-      // return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
     });
 }
 
@@ -105,17 +84,14 @@ function removeLikeCard(req, res, next) {
     .then((card) => {
       if (!card) {
         next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
-        // return res.status(NOT_FOUND_ERROR).send({ message: CARD_NOT_FOUND_ERROR_MSG });
       }
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
-        // return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_MSG });
       }
       next(err);
-      // return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
     });
 }
 

@@ -2,18 +2,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const BadRequestError = require('../error/badRequestError');
 const ConflictError = require('../error/conflictError');
-const InternalServerError = require('../error/internalServerError');
 const NotFoundError = require('../error/notFoundError');
 const UnauthorizedError = require('../error/unauthorizedError');
 const User = require('../models/user');
 const {
-  SERVER_ERROR,
-  BAD_REQUEST_ERROR,
-  NOT_FOUND_ERROR,
-  SERVER_ERROR_MSG,
   BAD_REQUEST_ERROR_MSG,
   USER_NOT_FOUND_ERROR_MSG,
-  UNAUTHORIZED,
   UNAUTHORIZED_ERROR_MSG,
   SECRET_PHRASE
 } = require('../utils/constants');
@@ -53,19 +47,13 @@ function createUser(req, res, next) {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса. createUser`));
-        // return res.status(BAD_REQUEST_ERROR).send({
-        //   message: ${BAD_REQUEST_ERROR_MSG}Проверьте правильность запроса. createUser,
-        // });
       }
 
       if (err.code === 11000) {
         next(new ConflictError('Неуникальное мыло xaxax'));
-        //res.status(409).send({ message: 'Неуникальное мыло хаха' });
       }
 
       next(err);
-      // next(new InternalServerError(SERVER_ERROR_MSG));
-      // return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG + 'createUser2' });
     });
 }
 
@@ -83,23 +71,16 @@ function getUser(req, res, next) {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-
-        //throw new NotFoundError(USER_NOT_FOUND_ERROR_MSG + 'getUser');
         next(new NotFoundError(USER_NOT_FOUND_ERROR_MSG + 'getUser'));
-        //return res.status(NOT_FOUND_ERROR).send({ message: USER_NOT_FOUND_ERROR_MSG + 'getUser' });
       }
-
-
 
       return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError(BAD_REQUEST_ERROR_MSG + 'getUser'))
-        // return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_MSG + 'getUser' });
       }
       next(err);
-      //return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG + 'getUser3' });
     });
 }
 
@@ -121,17 +102,14 @@ function updateUser(req, res, next) {
     .then((user) => {
       if (!user) {
         next(new NotFoundError(USER_NOT_FOUND_ERROR_MSG));
-        //return res.status(NOT_FOUND_ERROR).send({ message: USER_NOT_FOUND_ERROR_MSG });
       }
       return res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
-        // return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_MSG });
       }
       next(err);
-      // return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG });
     });
 }
 
@@ -147,17 +125,14 @@ function updateUserAvatar(req, res) {
     .then((user) => {
       if (!user) {
         next(new NotFoundError(USER_NOT_FOUND_ERROR_MSG));
-        // return res.status(NOT_FOUND_ERROR).send({ message: USER_NOT_FOUND_ERROR_MSG });
       }
       return res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
-        // return res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_ERROR_MSG });
       }
       next(err);
-      // return res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MSG + 'updateUserAvatar' });
     });
 }
 
