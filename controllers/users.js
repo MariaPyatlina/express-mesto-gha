@@ -34,12 +34,13 @@ function createUser(req, res, next) {
   const {
     name, about, avatar, email, password,
   } = req.body;
-
+  console.log('блаблабла крипт');
   bcrypt.hash(password, 10) // хешируем пароль
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
     .then((user) => {
+      console.log('блаблабла');
       res.status(201).send({
         name: user.name,
         about: user.about,
@@ -50,11 +51,15 @@ function createUser(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса. createUser`));
+        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса 1111111`));
+      }
+
+      if (err.name === 'CastError') {
+        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса. createUser 222222`));
       }
 
       if (err.code === 11000) {
-        next(new ConflictError('Неуникальное мыло xaxax'));
+        next(new ConflictError('Неуникальный email'));
       }
 
       next(err);

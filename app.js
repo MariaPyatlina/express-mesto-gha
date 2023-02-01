@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const userRoutes = require('./routes/users');
 const cardRoutes = require('./routes/cards');
@@ -11,25 +11,26 @@ const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process
 
 const app = express();
 // подключаемся к серверу mongo
-mongoose.connect(MONGO_URL);
+
 app.use(express.json());
+mongoose.set('strictQuery', false);
 
 // Маршрутизирует авторизацию
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().min(8),
+    password: Joi.string().required().min(8),
   }),
 }), login);
 
 // Маршрутизирует регистрацию
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
+    name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().regex(/https?:\/\/(www\.)?[a-z0-9-._~:/?#[]@!$&'()*\+,;=]+#?/),
     email: Joi.string().required().email(),
-    password: Joi.string().min(8),
+    password: Joi.string().required().min(8),
   }),
 }), createUser);
 
@@ -45,7 +46,10 @@ app.use('/*', (req, res) => {
 });
 
 // Обрабатывает все ошибки
+app.use(errors());
 app.use(handlerError);
+
+mongoose.connect(MONGO_URL);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
