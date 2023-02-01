@@ -40,13 +40,14 @@ function createUser(req, res, next) {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => {
-      console.log('блаблабла');
+      console.log('отправил пользователя');
       res.status(201).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
         email: user.email,
         _id: user._id,
+        // password: user.password,
       }); // чтобы при создании не возвращался пароль
     })
     .catch((err) => {
