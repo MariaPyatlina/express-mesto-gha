@@ -1,12 +1,13 @@
 const Card = require('../models/card');
 const BadRequestError = require('../error/badRequestError');
 const NotFoundError = require('../error/notFoundError');
-const UnauthorizedError = require('../error/unauthorizedError');
+// const UnauthorizedError = require('../error/unauthorizedError');
+const ForbiddenError = require('../error/forbiddenError');
 
 const {
   BAD_REQUEST_ERROR_MSG,
   CARD_NOT_FOUND_ERROR_MSG,
-  UNAUTHORIZED_ERROR_MSG,
+  FORBIDDEN_ERROR_MSG,
 } = require('../utils/constants');
 
 function createCard(req, res, next) {
@@ -41,7 +42,7 @@ function deleteCard(req, res, next) {
       }
 
       if (card.owner !== req.user._id) {
-        next(new UnauthorizedError(UNAUTHORIZED_ERROR_MSG));
+        next(new ForbiddenError(`${FORBIDDEN_ERROR_MSG}Нельзя удалить чужую карточку`));
       }
 
       return res.send({ data: card });
