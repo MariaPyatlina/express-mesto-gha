@@ -30,7 +30,8 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/https?:\/\/(www\.)?[a-z0-9-._~:/?#[]@!$&'()*\+,;=]+#?/),
+    // eslint-disable-next-line no-useless-escape
+    avatar: Joi.string().regex(/https?:\/\/(www\.)?[a-z0-9-\.\_\-~:\/?#[\]@!$&'\(\)\*\+,;=]+#?/),
   }),
 }), createUser);
 
