@@ -19,7 +19,7 @@ function createCard(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG}Проверьте правильность запроса.`))
+        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG}Проверьте правильность запроса.`));
       }
       next(err);
     });
@@ -30,15 +30,14 @@ function getAllCards(req, res, next) {
     .then((card) => {
       res.send({ data: card });
     })
-    .catch(() => next(err)
-    );
+    .catch((err) => next(err));
 }
 
 function deleteCard(req, res, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG))
+        next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
       }
 
       if (card.owner !== req.user._id) {
@@ -49,7 +48,7 @@ function deleteCard(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(BAD_REQUEST_ERROR_MSG))
+        next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
       }
       next(err);
     });
@@ -69,7 +68,7 @@ function setLikeCard(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(BAD_REQUEST_ERROR_MSG))
+        next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
       }
       next(err);
     });

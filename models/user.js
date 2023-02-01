@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const UnauthorizedError = require('../error/unauthorizedError');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -21,6 +22,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator(v) {
+        return /https?:\/\/(www\.)?[a-z0-9-._~:/?#[]@!$&'()*\+,;=]+#?/.test(v);
+      },
+      message: (props) => `${props.value} неправильный формат ссылки`,
+    },
   },
   email: {
     type: String,
@@ -44,20 +51,19 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject({ message: 'Неправильная пара логин пароль 1' });
+        return Promise.reject(new UnauthorizedError('Неправильная пара логин-пароль'));
       }
 
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject({ message: 'Неправильная пара логин пароль 2' })
+            return Promise.reject(new UnauthorizedError('Неправильная пара логин-пароль'));
           }
 
           return user;
         });
     });
 };
-
 
 // создаём модель и экспортируем её
 module.exports = mongoose.model('user', userSchema);

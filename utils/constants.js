@@ -9,8 +9,6 @@ const CARD_NOT_FOUND_ERROR_MSG = 'Карточка c указанным ID на�
 
 const UNAUTHORIZED = 401;
 const UNAUTHORIZED_ERROR_MSG = 'Необходима авторизация';
-
-
 const SECRET_PHRASE = 'Some_secret_phrase';
 
 module.exports = {

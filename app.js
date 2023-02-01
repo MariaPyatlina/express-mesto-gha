@@ -14,13 +14,12 @@ const app = express();
 mongoose.connect(MONGO_URL);
 app.use(express.json());
 
-
 // Маршрутизирует авторизацию
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().min(8),
-  })
+  }),
 }), login);
 
 // Маршрутизирует регистрацию

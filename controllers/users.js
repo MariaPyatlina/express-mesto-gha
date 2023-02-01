@@ -9,7 +9,7 @@ const {
   BAD_REQUEST_ERROR_MSG,
   USER_NOT_FOUND_ERROR_MSG,
   UNAUTHORIZED_ERROR_MSG,
-  SECRET_PHRASE
+  SECRET_PHRASE,
 } = require('../utils/constants');
 
 function login(req, res, next) {
@@ -19,22 +19,26 @@ function login(req, res, next) {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        SECRET_PHRASE,  // пейлоуд токена и секретный ключ подписи
-        { expiresIn: '7d' }
-      )
+        SECRET_PHRASE, // пейлоуд токена и секретный ключ подписи
+        { expiresIn: '7d' },
+      );
 
-      res.status(200).send({ messsage: 'success', token })
+      res.status(200).send({ messsage: 'success', token });
     })
     .catch(() => {
-      next(new UnauthorizedError(UNAUTHORIZED_ERROR_MSG))
+      next(new UnauthorizedError(UNAUTHORIZED_ERROR_MSG));
     });
 }
 
 function createUser(req, res, next) {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  bcrypt.hash(password, 10)  // хешируем пароль
-    .then((hash) => User.create({ name, about, avatar, email, password: hash }))
+  bcrypt.hash(password, 10) // хешируем пароль
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => {
       res.status(201).send({
         name: user.name,
@@ -42,7 +46,7 @@ function createUser(req, res, next) {
         avatar: user.avatar,
         email: user.email,
         _id: user._id,
-      });  // чтобы при создании не возвращался пароль
+      }); // чтобы при создании не возвращался пароль
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -62,7 +66,7 @@ function getAllUsers(req, res, next) {
     .then((user) => {
       res.send({ data: user });
     })
-    .catch(() => next(err));
+    .catch((err) => next(err));
 }
 
 function getUser(req, res, next) {
@@ -71,21 +75,21 @@ function getUser(req, res, next) {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError(USER_NOT_FOUND_ERROR_MSG + 'getUser'));
+        next(new NotFoundError(`${USER_NOT_FOUND_ERROR_MSG}getUser`));
       }
 
       return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(BAD_REQUEST_ERROR_MSG + 'getUser'))
+        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG}getUser`));
       }
       next(err);
     });
 }
 
 function getUserMe(req, res, next) {
-  const { _id } = req.user; //передавать свой id
+  const { _id } = req.user; // передавать свой id
   req.params.userId = _id;
   getUser(req, res, next);
 }
@@ -113,7 +117,7 @@ function updateUser(req, res, next) {
     });
 }
 
-function updateUserAvatar(req, res) {
+function updateUserAvatar(req, res, next) {
   const userId = req.user._id;
   const { avatar } = req.body;
 

@@ -9,12 +9,12 @@ function handlerError(err, req, res, next) {
       // проверяем статус и выставляем сообщение в зависимости от него
       message: statusCode === 500
         ? SERVER_ERROR_MSG
-        : message
+        : message,
     });
 
   next();
 }
 
 module.exports = {
-  handlerError
-}
+  handlerError,
+};
