@@ -39,20 +39,20 @@ function deleteCard(req, res, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
+        return next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
       }
 
       if (card.owner !== req.user._id) {
-        next(new ForbiddenError(`${FORBIDDEN_ERROR_MSG}Нельзя удалить чужую карточку`));
+        return next(new ForbiddenError(`${FORBIDDEN_ERROR_MSG}Нельзя удалить чужую карточку`));
       }
 
       return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
+        return next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
       }
-      next(err);
+      return next(err);
     });
 }
 
@@ -64,15 +64,15 @@ function setLikeCard(req, res, next) {
   )
     .then((card) => {
       if (!card) {
-        next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
+        return next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
       }
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
+        return next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
       }
-      next(err);
+      return next(err);
     });
 }
 
@@ -84,15 +84,15 @@ function removeLikeCard(req, res, next) {
   )
     .then((card) => {
       if (!card) {
-        next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
+        return next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
       }
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
+        return next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
       }
-      next(err);
+      return next(err);
     });
 }
 
