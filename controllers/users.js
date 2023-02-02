@@ -34,29 +34,26 @@ function createUser(req, res, next) {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  console.log('блаблабла крипт');
   bcrypt.hash(password, 10) // хешируем пароль
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
     .then((user) => {
-      console.log('отправил пользователя');
       res.status(201).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
         email: user.email,
         _id: user._id,
-        // password: user.password,
       }); // чтобы при создании не возвращался пароль
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса 1111111`));
+        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса.`));
       }
 
       if (err.name === 'CastError') {
-        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса. createUser 222222`));
+        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса.`));
       }
 
       if (err.code === 11000) {
@@ -76,19 +73,17 @@ function getAllUsers(req, res, next) {
 }
 
 function getUser(req, res, next) {
-  console.log('req.params', req.params);
-  console.log('req.user', req.user);
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError(`${USER_NOT_FOUND_ERROR_MSG}getUser`));
+        next(new NotFoundError(USER_NOT_FOUND_ERROR_MSG));
       }
 
       return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG}getUser`));
+        next(new BadRequestError(BAD_REQUEST_ERROR_MSG));
       }
       next(err);
     });

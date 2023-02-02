@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const BadRequestError = require('../error/badRequestError');
 const NotFoundError = require('../error/notFoundError');
-// const UnauthorizedError = require('../error/unauthorizedError');
 const ForbiddenError = require('../error/forbiddenError');
 
 const {
@@ -17,11 +16,10 @@ function createCard(req, res, next) {
   Card.create({ name, link, owner })
     .then((card) => {
       res.status(201).send(card);
-      console.log(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG}Проверьте правильность запроса.`));
+        next(new BadRequestError(`${BAD_REQUEST_ERROR_MSG} Проверьте правильность запроса.`));
       }
       next(err);
     });
@@ -43,7 +41,7 @@ function deleteCard(req, res, next) {
       }
       // eslint-disable-next-line eqeqeq
       if (card.owner != req.user._id) {
-        return next(new ForbiddenError(`${FORBIDDEN_ERROR_MSG} Нельзя удалить чужую карточку`));
+        return next(new ForbiddenError(`${FORBIDDEN_ERROR_MSG}. Нельзя удалить чужую карточку`));
       }
       return res.status(200).send({ data: card });
     })
