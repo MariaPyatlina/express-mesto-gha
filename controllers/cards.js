@@ -36,16 +36,16 @@ function getAllCards(req, res, next) {
 }
 
 function deleteCard(req, res, next) {
-
-  Card.findById(req.params.cardId)
+  Card.findByIdAndDelete(req.params.cardId)
     .then((card) => {
       if (!card) {
         return next(new NotFoundError(CARD_NOT_FOUND_ERROR_MSG));
       }
+      // eslint-disable-next-line eqeqeq
       if (card.owner != req.user._id) {
         return next(new ForbiddenError(`${FORBIDDEN_ERROR_MSG} Нельзя удалить чужую карточку`));
       }
-      card.delete(); res.status(200).send({ data: card });
+      return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
