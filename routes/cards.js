@@ -5,12 +5,13 @@ const {
   createCard, getAllCards, deleteCard, setLikeCard, removeLikeCard,
 } = require('../controllers/cards');
 
-router.post('/', auth, celebrate({
+router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    // eslint-disable-next-line no-useless-escape
+    link: Joi.string().regex(/https?:\/\/(www\.)?[a-z0-9-\.\_\-~:\/?#[\]@!$&'\(\)\*\+,;=]+#?/).required(),
   }),
-}), createCard);
+}), auth, createCard);
 
 router.get('/', auth, getAllCards);
 

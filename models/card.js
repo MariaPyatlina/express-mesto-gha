@@ -14,7 +14,7 @@ const cardSchema = new mongoose.Schema({
       validator(v) {
         return /https?:\/\/(www\.)?[a-z0-9-._~:/?#[]@!$&'()*\+,;=]+#?/.test(v);
       },
-      message: (props) => `${props.value} неправильный формат ссылки`,
+      message: (props) => `${props.value} неправильный формат ссылки карточка`,
     },
   },
   owner: {
