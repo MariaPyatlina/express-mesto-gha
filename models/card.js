@@ -15,7 +15,7 @@ const cardSchema = new mongoose.Schema({
         // eslint-disable-next-line no-useless-escape
         return /https?:\/\/(www\.)?[a-z0-9-\.\_\-~:\/?#[\]@!$&'\(\)\*\+,;=]+#?/.test(v);
       },
-      message: (props) => `${props.value} неправильный формат ссылки карточка`,
+      message: (props) => `${props.value} неправильный формат ссылки`,
     },
   },
   owner: {
